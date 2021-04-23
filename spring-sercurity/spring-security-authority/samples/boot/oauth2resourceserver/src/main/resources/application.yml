@@ -1,0 +1,11 @@
+spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: ${mockwebserver.url}/.well-known/jwks.json
+logging:
+  level:
+    root: WARN
+    org.springframework.web: Trace
+    org.springframework.security: Trace

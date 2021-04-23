@@ -1,0 +1,15 @@
+spring:
+  application:
+    name: alibaba-resource-consumer-server
+  profiles:
+    active: dev
+  cloud:
+    nacos:
+      config:
+        server-addr: 192.168.191.15:8848
+        group: DEFAULT_GROUP
+        file-extension: yaml
+logging:
+  level:
+    root: WARN
+    org.springframework.web: Trace

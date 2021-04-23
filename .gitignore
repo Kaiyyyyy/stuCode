@@ -1,6 +1,7 @@
 # Output Directory
 target/
-
+*/target/
+**/target/
 # C pre-compile
 *.gch
 *.pch
@@ -89,3 +90,7 @@ __pycache__/
 .github/
 */.github/
 **/.github/
+
+.git/
+*/.git/
+**/.git/

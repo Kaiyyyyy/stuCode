@@ -1,0 +1,148 @@
+## ---------------------------------------------------------------------------
+## Licensed to the Apache Software Foundation (ASF) under one or more
+## contributor license agreements.  See the NOTICE file distributed with
+## this work for additional information regarding copyright ownership.
+## The ASF licenses this file to You under the Apache License, Version 2.0
+## (the "License"); you may not use this file except in compliance with
+## the License.  You may obtain a copy of the License at
+##
+##      http://www.apache.org/licenses/LICENSE-2.0
+##
+## Unless required by applicable law or agreed to in writing, software
+## distributed under the License is distributed on an "AS IS" BASIS,
+## WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+## See the License for the specific language governing permissions and
+## limitations under the License.
+## ---------------------------------------------------------------------------
+
+APPLICATION_ID: springmvctest
+service_description:
+  name: springmvcClient
+  version: 0.0.1
+servicecomb:
+  service:
+    registry:
+      address: http://127.0.0.1:9980,http://127.0.0.1:30100
+      autodiscovery: true
+      client:
+        timeout:
+          idle: 60
+          watch: 60
+      instance:
+        healthCheck:
+          interval: 3
+        pull:
+          interval: 90
+        watch: true
+      autodiscovery: true
+  # can download config center from https://cse-bucket.obs.myhwclouds.com/LocalCSE/Local-CSE-1.0.0.zip to test dynamic config
+  config:
+    client:
+      serverUri: http://127.0.0.1:30113
+      refreshMode: 1
+      refresh_interval: 5000
+      refreshPort: 30114
+  rest:
+    client:
+      connection:
+        compression: true
+  references:
+    version-rule: 0+
+  handler:
+    chain:
+      Consumer:
+        default: loadbalance,fault-injection-consumer,bizkeeper-consumer
+  tracing:
+    enabled: true
+    samplingRate: 0.5
+  loadbalance:
+    userDefinedEndpoint.enabled: true
+    strategy:
+      name: WeightedResponse
+    retryEnabled: true
+    retryOnSame: 1
+    retryOnNext: 1
+    filter.status.enabled: false
+  fallbackpolicy:
+    Consumer:
+      springmvc:
+        codeFirst:
+          fallbackFromCache:
+            policy: fromCache
+          fallbackReturnNull:
+            policy: returnNull
+          fallbackThrowException:
+            policy: throwException
+          fallbackForce:
+            policy: mycustom
+  fallback:
+    Consumer:
+      springmvc:
+        codeFirst:
+          fallbackForce:
+            force: true
+  datacenter:
+    name: myDC
+    region: my-Region
+    availableZone: my-Zone
+  governance:
+    Consumer:
+      springmvc:
+        schemas:
+          codeFirst:
+            operations:
+              testDelay:
+                policy:
+                  fault:
+                    protocols:
+                      rest:
+                        delay:
+                          fixedDelay: 10
+                          percent: 50
+              testAbort:
+                policy:
+                  fault:
+                    protocols:
+                      rest:
+                        abort:
+                          httpStatus: 421
+                          percent: 50
+  test:
+    duplicate1: newer
+
+cse:
+  fallback:
+    Consumer:
+      springmvc:
+        codeFirstBizkeeperTest:
+          testTimeout:
+            enabled: false
+  isolation:
+    Consumer:
+      springmvc:
+        codeFirstBizkeeperTest:
+          testTimeout:
+            timeout:
+              enabled: true
+            timeoutInMilliseconds: 1000
+  test:
+    duplicate2: newer
+
+3rd-svc:
+  urls:
+    - http://localhost:8080
+
+#########SSL options
+ssl.protocols: TLSv1.2
+ssl.authPeer: true
+ssl.checkCN.host: false
+
+#########certificates config
+ssl.trustStore: trust.jks
+ssl.trustStoreType: JKS
+ssl.trustStoreValue: Changeme_123
+ssl.keyStore: server.p12
+ssl.keyStoreType: PKCS12
+ssl.keyStoreValue: Changeme_123
+ssl.crl: revoke.crl
+ssl.sslCustomClass: org.apache.servicecomb.demo.DemoSSLCustom

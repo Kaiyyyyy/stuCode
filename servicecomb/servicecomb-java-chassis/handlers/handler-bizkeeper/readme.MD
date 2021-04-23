@@ -1,0 +1,1 @@
+参考： hystrix: https://github.com/Netflix/Hystrix/wiki

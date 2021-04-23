@@ -1,0 +1,8 @@
+apply plugin: 'io.spring.convention.spring-sample-war'
+
+dependencies {
+	compile project(':spring-security-saml2-service-provider')
+	compile project(':spring-security-config')
+
+	testCompile 'org.springframework:spring-test'
+}

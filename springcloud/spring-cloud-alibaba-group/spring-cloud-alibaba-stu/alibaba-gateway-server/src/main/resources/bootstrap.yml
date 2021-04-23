@@ -1,0 +1,87 @@
+spring:
+  application:
+    name: alibaba-gateway-server
+  profiles:
+    active: dev
+
+  thymeleaf:
+    cache: false
+#  security:
+#    oauth2:
+#      client:
+#        registration:
+#          gateway:
+##            provider: gateway
+#            client-id: gateway-client
+#            client-secret: gateway-secret
+#            authorization-grant-type: authorization_code
+#            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
+#            scope: all
+#            client-name: gateway
+#        provider:
+#          gateway:
+#            authorization-uri: http://127.0.0.1:9999/oauth/authorize
+#            token-uri: http://127.0.0.1:9999/oauth/token
+  security:
+    oauth2:
+      client:
+        registration:
+          webflux:
+            provider: webflux
+            client-id: webflux-client
+            client-secret: webflux-secret
+            authorization-grant-type: authorization_code
+            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
+            scope: all
+            client-name: webflux
+        provider:
+          webflux:
+            authorization-uri: http://127.0.0.1:9999/oauth/authorize
+            token-uri: http://127.0.0.1:9999/oauth/token
+            user-info-uri: http://127.0.0.1:9999/user
+            user-name-attribute: name
+  cloud:
+    nacos:
+      config:
+        server-addr: nacos.com:8848
+        group: DEFAULT_GROUP
+        file-extension: yaml
+    gateway:
+      routes:
+#        - id: after_route
+#          uri: lb://alibaba-resource-consumer-server
+#          predicates:
+#            - After=2021-01-20T17:42:47.789-07:00[Asia/Shanghai]
+        - id: alibaba-resource-consumer-server_route
+          uri: lb://alibaba-resource-consumer-server/
+          predicates:
+            - Path=/alibaba-resource-consumer-server/**
+          filters:
+            - StripPrefix=1
+        - id: alibaba-resource-provider-server_route
+          uri: lb://alibaba-resource-provider-server/
+          predicates:
+            - Path=/alibaba-resource-provider-server/**
+          filters:
+            - StripPrefix=1
+        - id: nacos-route
+          uri: http://192.168.191.15:8848
+          predicates:
+            - Path=/nacos/**
+logging:
+  level:
+    root: info
+    org.springframework.web: Trace
+    org.springframework.security: trace
+    org.springframework.security.oauth2: trace
+    org.springframework.security.oauth2.client: trace
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: always
+
+resource-uri: http://127.0.0.1:9999

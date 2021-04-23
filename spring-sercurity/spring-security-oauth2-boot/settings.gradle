@@ -1,0 +1,14 @@
+rootProject.name = 'spring-security-oauth2-boot'
+
+include 'spring-security-oauth2-autoconfigure'
+include 'docs'
+
+file('samples').eachDirMatch(~/spring-boot-sample-.*/) { dir ->
+    include dir.name
+    project(":$dir.name").projectDir = dir
+}
+
+rootProject.children.each { project ->
+    project.buildFileName = "build.gradle"
+}
+

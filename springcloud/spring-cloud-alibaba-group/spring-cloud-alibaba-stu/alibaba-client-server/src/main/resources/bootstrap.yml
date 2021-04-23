@@ -1,0 +1,42 @@
+spring:
+  application:
+    name: alibaba-client-server
+  profiles:
+    active: dev
+  cloud:
+    nacos:
+      config:
+        server-addr: 192.168.191.15:8848
+        group: DEFAULT_GROUP
+        file-extension: yaml
+  thymeleaf:
+    cache: false
+  security:
+    oauth2:
+      client:
+        registration:
+          client-server:
+            provider: client-server
+            client-id: client-server
+            client-secret: client-server-secret
+            authorization-grant-type: authorization_code
+            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
+            scope: all,message.read,message.write
+            client-name: client-server
+        provider:
+          client-server:
+            authorization-uri: http://127.0.0.1:9999/oauth/authorize
+            token-uri: http://127.0.0.1:9999/oauth/token
+            user-info-uri: http://127.0.0.1:9999/user
+            user-name-attribute: name
+
+messages:
+  base-uri: http://localhost:9901/messages
+
+logging:
+  level:
+    root: WARN
+    org.springframework.web: Trace
+    org.springframework.security: trace
+    org.springframework.security.oauth2: trace
+    org.springframework.security.oauth2.client: trace

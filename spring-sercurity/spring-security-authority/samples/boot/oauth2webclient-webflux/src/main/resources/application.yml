@@ -1,0 +1,45 @@
+logging:
+  level:
+    root: INFO
+    org.springframework.web: INFO
+    org.springframework.security: trace
+#    org.springframework.boot.autoconfigure: DEBUG
+
+spring:
+  thymeleaf:
+    cache: false
+#  security:
+#    oauth2:
+#      client:
+#        registration:
+#          client-id:
+#            client-id: replace-with-client-id
+#            client-secret: replace-with-client-secret
+#            provider: github
+#            scope: read:user,public_repo
+#
+#resource-uri: https://api.github.com/user/repos
+
+  security:
+    oauth2:
+      client:
+        registration:
+          webflux:
+            #            provider: gateway
+            client-id: webflux-client
+            client-secret: webflux-secret
+            authorization-grant-type: authorization_code
+            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
+            scope: all
+            client-name: webflux
+        provider:
+          webflux:
+            authorization-uri: http://127.0.0.1:9999/oauth/authorize
+            token-uri: http://127.0.0.1:9999/oauth/token
+            user-info-uri: http://127.0.0.1:9999/user
+            user-name-attribute: username
+
+resource-uri: http://127.0.0.1:9001
+server:
+  port: 8081
+

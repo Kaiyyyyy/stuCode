@@ -1,0 +1,36 @@
+spring:
+  application:
+    name: alibaba-resource-provider-server
+  profiles:
+    active: dev
+  cloud:
+    nacos:
+      config:
+        server-addr: nacos.com:8848
+        group: DEFAULT_GROUP
+        file-extension: yaml
+
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    driver-class-name: com.mysql.jdbc.Driver
+    jdbc-url: jdbc:mysql://server.kaiy.vip:3306/oauth?useUnicode=true&characterEncoding=utf-8&useSSL=false
+    username: root
+    password: kaiy123456.
+    hikari:
+      minimum-idle: 5
+      idle-timeout: 600000
+      maximum-pool-size: 10
+      auto-commit: true
+      pool-name: MyHikariCP
+      max-lifetime: 1800000
+      connection-timeout: 30000
+      connection-test-query: SELECT 1
+logging:
+  level:
+    root: WARN
+    org.springframework.web: info
+    org.springframework.security: Trace
+    org.springframework.security.oauth2: Trace
+    org.springframework.jdbc.core.JdbcTemplate: Trace
+    org.springframework.jdbc.core.StatementCreatorUtils: trace
+    org.springframework.jdbc.core.ResultSet : trace
